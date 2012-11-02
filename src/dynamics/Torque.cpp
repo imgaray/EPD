@@ -12,7 +12,7 @@ Torque::~Torque(){}
 *	@param mass the mass of the body on which the force is applied.
 */
 Vec& Torque::getAngularAcceleration(double inertia_moment){
-	Vec* accel = new Vec(x/inertia, y/inertia, z/inertia);
+	Vec* accel = new Vec(x/inertia_moment, y/inertia_moment, z/inertia_moment);
 	return *accel;
 }
 

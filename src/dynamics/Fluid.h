@@ -1,7 +1,8 @@
 #ifndef FLUID_H
 #define FLUID_H
 
-#include "../common/Math.hpp"
+#include "./Force.h"
+#include "../common/Math.h"
 
 class Fluid {
 private:
@@ -13,7 +14,7 @@ private:
 
 	double gravity;
 public:
-	Fluid(double mass, double density);
+	Fluid(double mass, double density, double viscosity);
 	virtual ~Fluid();
 
 	double getMass();

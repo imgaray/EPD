@@ -1,7 +1,7 @@
 #ifndef TORQUE_H
 #define TORQUE_H
 
-#include "../common/Math.hpp"
+#include "../common/Math.h"
 
 class Torque: public Vec{
 public:

@@ -1,4 +1,7 @@
-#include "Math.hpp"
+#ifndef MATH_CPP
+#define MATH_CPP
+
+#include "Math.h"
 
 
 /** 
@@ -126,4 +129,5 @@ Vec Vec::cross(const Vec& a){
 	Vec v(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
 	return v;
 }
-		
+
+#endif /* MATH_CPP*/
