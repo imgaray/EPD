@@ -6,9 +6,8 @@
 class Vec{
 	public:
 		double x, y, z;
-		Vec(double x, double y, double z);
-		Vec(double x, double y);
-		Vec();
+		Vec(double x = 0, double y = 0, double z = 0);
+
 		/* redefinition methods*/
 		void operator += (const Vec& v);
         void operator -= (const Vec& v);

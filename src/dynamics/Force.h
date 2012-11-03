@@ -6,9 +6,7 @@
 
 class Force: public Vec{
 public:
-	Force(double x, double y, double z);
-	Force(double x, double y);
-	Force();
+	Force(double x = 0, double y = 0, double z = 0);
 
 	Vec& getLinearAcceleration(double mass);
 	Torque& getToque(const Vec& point) const;

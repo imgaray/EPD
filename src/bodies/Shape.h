@@ -8,7 +8,8 @@ public:
 	virtual bool contains(const Vec& point)= 0;
 	virtual ~Shape() = 0;
 	Shape(Vec& position);
-	Vec& center;
+protected:
+	Vec center;
 };
 
 #endif /* SHAPE_H_ */

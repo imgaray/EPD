@@ -30,7 +30,8 @@ public:
 	void applyTorque(const Torque& t);
 
 	// this is useful for collisions
-	void applyImpulse(Vec& impulse);
+	void applyLinearImpulse(Vec& impulse);
+	void applyAngularImpulse(Vec& impulse);
 	void applyImpulse(Vec& impulse, const Vec& point);
 
 	/*GETTERS & SETTERS*/

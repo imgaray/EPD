@@ -3,8 +3,7 @@
 #include "Torque.h"
 
 Torque::Torque(double x, double y, double z):Vec(x,y,z){}
-Torque::Torque(double x, double y):Vec(x,y,0){}
-Torque::Torque():Vec(0,0,0){}
+
 Torque::~Torque(){}
 
 /**
