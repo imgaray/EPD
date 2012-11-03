@@ -1,21 +1,18 @@
-#ifndef BODY_CPP
+#ifndef BODY_CP
 #define BODY_CPP
 #include "Body.h"
 
 Body::Body(double mass) : position(*(new Vec(0,0))),
-		linear_velocity(*(new Vec(0, 0))), angular_velocity(*(new Vec(0, 0))), force(*(
-				new Force())), torque(*(new Torque())) {
+		linear_velocity(0, 0), angular_velocity(0, 0) {
 	this->angle = 0;
 	this->linear_damping = 0;
 	this->angular_damping = 0;
 	this->gravity = 0;
-
 	this->mass = mass;
 	this->inertia_moment = mass;
 }
 Body::Body(double mass, Vec& position) : position(position),
-		linear_velocity(*(new Vec(0, 0))), angular_velocity(*(new Vec(0, 0))), force(*(
-				new Force())), torque(*(new Torque())) {
+		linear_velocity(0, 0), angular_velocity(0, 0) {
 	this->angle = 0;
 	this->linear_damping = 0;
 	this->angular_damping = 0;
@@ -39,22 +36,19 @@ void Body::applyImpulse(Vec& impulse, const Vec& point) {
 }
 
 Vec& Body::getPosition() {
-	Vec* vec = new Vec(0, 0, 0);
-	return *vec;
+	return this->position;
 }
 Vec& Body::getLinearVelocity() {
-	Vec* vec = new Vec(0, 0, 0);
-	return *vec;
+	return this->linear_velocity;
 }
 Vec& Body::getAngularVelocity() {
-	Vec* vec = new Vec(0, 0, 0);
-	return *vec;
+	return this->angular_velocity;
 }
 double Body::getMass() {
-	return 0;
+	return this->mass;
 }
 double Body::getInertiaMoment() {
-	return 0;
+	return this->inertia_moment;
 }
 double Body::getAngle() {
 	return 0;
