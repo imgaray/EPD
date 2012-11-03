@@ -3,6 +3,14 @@
 
 #include "Math.h"
 
+/**
+	Constructor 3 dimensional vector zero (0,0,0).
+*/
+Vec::Vec(){
+	this->x = 0;
+	this->y = 0;
+	this->z = 0;
+}
 
 /** 
 	Constructor 3 dimensional vector.
@@ -107,11 +115,11 @@ Vec Vec::normalize(){
 	return v;
 }
 
-double Vec::norm(){
+double Vec::norm() const{
 	return sqrt(x*x+y*y+z*z);
 }
 
-Vec Vec::distance(const Vec& a){
+Vec Vec::distance(const Vec& a) const{
 	Vec v(this->x - a.x, this->y - a.y, this->z - a.z);
 	return v;
 }
@@ -120,12 +128,12 @@ void Vec::set(double x, double y, double z){
 	this->x = x; this->y = y; this->z = z;
 }
 
-Vec Vec::dot(const Vec& a){
+Vec Vec::dot(const Vec& a) const{
 	Vec v(this->x * a.x, this->y * a.y, this->z *a.z);
 	return v;
 }
 
-Vec Vec::cross(const Vec& a){
+Vec Vec::cross(const Vec& a) const{
 	Vec v(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
 	return v;
 }

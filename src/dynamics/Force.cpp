@@ -23,7 +23,8 @@ Vec& Force::getLinearAcceleration(double mass){
 *	Gets the torque, product of the force applied in a particular point.
 *	@param mass the mass of the body on which the force is applied.
 */
-Torque& Force::getToque(Vec& point){
+Torque& Force::getToque(const Vec& point) const{
+
 	Vec v = point.cross((Vec&)*this);
 	Torque* torque = new Torque(v.x, v.y, v.z);
 	return *torque;

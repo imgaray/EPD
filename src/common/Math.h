@@ -8,7 +8,7 @@ class Vec{
 		double x, y, z;
 		Vec(double x, double y, double z);
 		Vec(double x, double y);
-	
+		Vec();
 		/* redefinition methods*/
 		void operator += (const Vec& v);
         void operator -= (const Vec& v);
@@ -25,10 +25,10 @@ class Vec{
 		/* methods*/
 		void set(double x, double y, double z); 			
 		Vec normalize();
-		double norm();
-		Vec distance(const Vec& a);
-		Vec dot(const Vec& a);
-		Vec cross(const Vec& a);
+		double norm() const;
+		Vec distance(const Vec& a) const;
+		Vec dot(const Vec& a) const;
+		Vec cross(const Vec& a) const;
 		
 		virtual ~Vec();	
 

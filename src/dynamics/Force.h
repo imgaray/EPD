@@ -11,7 +11,7 @@ public:
 	Force();
 
 	Vec& getLinearAcceleration(double mass);
-	Torque& getToque(Vec& point);
+	Torque& getToque(const Vec& point) const;
 	virtual ~Force();
 };
 
