@@ -6,12 +6,12 @@
 
 class Body {
 private:
-	Vec& position;	
+	Vec position;	
 	double angle;
-	Vec& linear_velocity;
-	Vec& angular_velocity;
-	Force& force;
-	Torque& torque;
+	Vec linear_velocity;
+	Vec angular_velocity;
+	Force force;
+	Torque torque;
 
 	double linear_damping;
 	double angular_damping;
