@@ -5,7 +5,6 @@
 Shape::Shape(Vec& pos):center(pos){}
 
 Shape::~Shape(){
-	delete &(this->center);
 }
 
 

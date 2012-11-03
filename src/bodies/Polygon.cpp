@@ -3,24 +3,47 @@
 
 #include "Polygon.h"
 
-Polygon::Polygon() :
-		Shape(*(new Vec(0, 0))) {
+// POLYGON //
+Polygon::Polygon(Vec& vec) :
+		Shape(vec) {
 	this->count = 0;
 	this->vertices = new Vec[MAX_POLYGON_VERTICES];
+	this->normals = new Vec[MAX_POLYGON_VERTICES];
 }
 
 Polygon::~Polygon() {
+	delete[] this->vertices;
+	delete[] this->normals;
+}
+
+Vec* Polygon::getVertices() {
+	return this->vertices;
+}
+
+unsigned short Polygon::getVerticesCount() {
+	return this->count;
+}
+////////////////////
+// CONVEX POLYGON //
+
+ConvexPolygon::ConvexPolygon(Vec& vec) :
+		Polygon(vec) {
+}
+
+ConvexPolygon::~ConvexPolygon() {
+}
+
+void ConvexPolygon::setRectangle(double height, double width) {
 
 }
 
-void Polygon::addVertex(Vec &point) {
+void ConvexPolygon::addVertex(Vec &point) {
 	this->vertices[this->count] = point;
 	this->count++;
 }
 
-bool Polygon::contains(const Vec& point) {
+bool ConvexPolygon::contains(const Vec& point) {
 
 	return false;
 }
-
 #endif /* POLYGON_CPP */
