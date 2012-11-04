@@ -70,26 +70,30 @@ Vec Vec::operator !() {
 	return v;
 }
 
-bool Vec::operator ==(const Vec& a) {
-	return (x == a.x && y == a.y && z == a.y);
+bool Vec::operator ==(const Vec& a) const {
+	return (x == a.x && y == a.y && z == a.z);
 }
 
-Vec Vec::operator +(const Vec& a) {
+bool Vec::operator !=(const Vec& a) const {
+	return !(*this == a);
+}
+
+Vec Vec::operator +(const Vec& a) const {
 	Vec v(this->x + a.x, this->y + a.y, this->z + a.z);
 	return v;
 }
 
-Vec Vec::operator -(const Vec& a) {
+Vec Vec::operator -(const Vec& a) const {
 	Vec v(this->x - a.x, this->y - a.y, this->z - a.z);
 	return v;
 }
 
-Vec Vec::operator *(double k) {
+Vec Vec::operator *(double k) const {
 	Vec v(this->x * k, this->y * k, this->z * k);
 	return v;
 }
 
-Vec Vec::operator /(double k) {
+Vec Vec::operator /(double k) const {
 	Vec v(this->x / k, this->y / k, this->z / k);
 	return v;
 }
@@ -106,6 +110,10 @@ double Vec::norm() const {
 	return sqrt(x * x + y * y + z * z);
 }
 
+double Vec::angle(Vec& a) const {
+	return acos(this->dot(a) / (this->norm() * a.norm()));
+}
+
 Vec Vec::distance(const Vec& a) const {
 	Vec v(this->x - a.x, this->y - a.y, this->z - a.z);
 	return v;
@@ -117,14 +125,16 @@ void Vec::set(double x, double y, double z) {
 	this->z = z;
 }
 
-Vec Vec::dot(const Vec& a) const {
-	Vec v(this->x * a.x, this->y * a.y, this->z * a.z);
-	return v;
+double Vec::dot(const Vec& a) const {
+	return this->x * a.x + this->y * a.y + this->z * a.z;
 }
 
 Vec Vec::cross(const Vec& a) const {
-	Vec v(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
-	return v;
+	Vec v(0, 0, x * a.y - y * a.x);
+	if (z == 0.0 && a.z == 0.0)
+		return v;
+	Vec v2(y * a.z - z * a.y, z * a.x - x * a.z, 0);
+	return v + v2;
 }
 
 #endif /* MATH_CPP*/

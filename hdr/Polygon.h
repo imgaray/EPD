@@ -2,6 +2,9 @@
 #define POLYGON_H_
 
 #include "Shape.h"
+#include <iostream>
+#include <algorithm>
+#include <vector>
 
 #ifndef MAX_POLYGON_VERTICES
 #define MAX_POLYGON_VERTICES 10
@@ -33,6 +36,11 @@ public:
 
 	~ConvexPolygon();
 private:
+	Vec findFirstVertex();
+	void jarvisAlgorithm();
+
+	bool angleComparator(const Vec& center,const Vec& a, const Vec& b);
+
 };
 
 #endif /* POLYGON_H_ */

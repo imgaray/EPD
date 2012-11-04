@@ -15,20 +15,22 @@ class Vec{
 		void operator /= (double k);
 		Vec operator -();
 		Vec operator !();
-		bool operator == (const Vec& a);
-		Vec operator + (const Vec& a);
-		Vec operator - (const Vec& a);
-		Vec operator * (double k);
-		Vec operator / (double k);
+		bool operator == (const Vec& a) const;
+		bool operator != (const Vec& a) const;
+		Vec operator + (const Vec& a) const;
+		Vec operator - (const Vec& a) const;
+		Vec operator * (double k) const;
+		Vec operator / (double k) const;
 
 		/* methods*/
 		void set(double x, double y, double z); 			
 		Vec normalize();
 		double norm() const;
+		double angle(Vec& b) const;
 		Vec distance(const Vec& a) const;
-		Vec dot(const Vec& a) const;
+		double dot(const Vec& a) const;
 		Vec cross(const Vec& a) const;
-		
+
 		virtual ~Vec();	
 
 };
