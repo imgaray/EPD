@@ -19,6 +19,7 @@ class Vec{
 		bool operator != (const Vec& a) const;
 		Vec operator + (const Vec& a) const;
 		Vec operator - (const Vec& a) const;
+		Vec operator - (const Vec& a) const;
 		Vec operator * (double k) const;
 		Vec operator / (double k) const;
 		Vec& operator=(const Vec& v);
