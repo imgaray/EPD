@@ -24,6 +24,15 @@ Vec::~Vec() {
 	this->z = 0;
 }
 
+Vec& Vec::operator=(const Vec& v) {
+	this->x = v.x;
+	this->y = v.y;
+	this->z = v.z;
+}
+
+Vec(const Vec& other): x(other.x), y(other.y), z(other.z) {
+}
+
 void Vec::operator +=(const Vec& v) {
 	this->x += v.x;
 	this->y += v.y;
