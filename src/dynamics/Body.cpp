@@ -2,6 +2,7 @@
 #define BODY_CPP
 #include "Body.h"
 #include <assert.h>
+#include "CtsDynamics.h"
 
 Body::Body(double mass) :
 		position(), linear_velocity(), angular_velocity() {
