@@ -1,6 +1,7 @@
 #ifndef BODY_CP
 #define BODY_CPP
 #include "Body.h"
+#include <assert.h>
 
 Body::Body(double mass) :
 		position(), linear_velocity(), angular_velocity() {
@@ -10,6 +11,7 @@ Body::Body(double mass) :
 	this->gravity = 0;
 	this->mass = mass;
 	this->inertia_moment = mass;
+	this->shape = NULL;
 }
 Body::Body(double mass, Vec& position) :
 		position(position), linear_velocity(), angular_velocity() {
@@ -20,9 +22,10 @@ Body::Body(double mass, Vec& position) :
 
 	this->mass = mass;
 	this->inertia_moment = mass;
+	this->shape = NULL;
 }
 Body::~Body() {
-
+	shape? delete shape:;
 }
 
 void Body::applyForce(const Force& force) {
@@ -54,12 +57,10 @@ Vec& Body::getPosition() {
 	return *vec;
 }
 Vec& Body::getLinearVelocity() {
-	Vec* vec = new Vec();
-	return *vec;
+	return this->linear_velocity;
 }
 Vec& Body::getAngularVelocity() {
-	Vec* vec = new Vec();
-	return *vec;
+	return this->angular_velocity;
 }
 double Body::getMass() {
 	return this->mass;
@@ -74,16 +75,27 @@ double Body::getGravity() {
 	return this->gravity;
 }
 
+inline bool inContact(const Body& other) const {
+	return this->shape->touches(*(other->shape));
+}
+
+void collide(Body& other) {
+	assert(other->shape & this->shape);
+	if (!this->shape->touches(*(other->shape)) return;
+	// here on, we assume that the collision is an elastic one,
+	// could be modified later without changing the collide interface
+	// Two basic principles involved here: conservation of linear Momentum
+	// and conservation of Kinetic energy
+	
+}
+
 void Body::setPosition(Vec& pos) {
-	delete &this->position;
 	this->position = pos;
 }
 void Body::setLinearVelocity(Vec& vel) {
-	delete &this->linear_velocity;
 	this->linear_velocity = vel;
 }
 void Body::setAngularVelocity(Vec& vel) {
-	delete &this->angular_velocity;
 	this->angular_velocity = vel;
 }
 void Body::setInertiaMoment(double inertia_moment) {
@@ -95,4 +107,10 @@ void Body::setAngle(double angle) {
 void Body::setGravity(double gravity) {
 	this->gravity = gravity;
 }
+
+void Body::setShape(Shape* shape) {
+	this->shape? delete shape:;
+	this->shape = shape;
+}
+
 #endif
