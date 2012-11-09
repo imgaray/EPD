@@ -1,0 +1,17 @@
+PARA GENERAR MAKEFILES:
+
+1) desde una terminal posicionarse en este directorio y hacer:
+
+$ autoreconf --install --force
+
+2) Si no tiro errores, hacemos
+
+$ ./configure
+
+En este estadio tenemos los makefiles ya hechos.
+
+TODO:
+
+1) Ir agregando directorios, SRC y demas reglas para que compile lo que queremos.
+2) Agregar el tema del directorio de pruebas.
+3) Jugar con esto hasta que le agarremos la mano.
