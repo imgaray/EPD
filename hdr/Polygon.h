@@ -10,22 +10,38 @@
 #define MAX_POLYGON_VERTICES 10
 #endif /* MAX_POLYGON_VERTICES */
 
+class Shape;
+
 class Polygon: public Shape {
 public:
 	Polygon(Vec& vec);
-	bool contains(const Vec& point) = 0;
 
+	virtual void addVertex(Vec& vertex);
+	void removeVertes(const Vec& vertex);
 	Vec* getVertices();
 	unsigned short getVerticesCount();
 
-	virtual ~Polygon();
-protected:
-	Vec* vertices;
-	Vec* normals;
-	short count;
+	//Shape Interface
+	virtual bool contains(const Vec& point);
+	virtual double getExternalRadius();
 
+	//Collisionable Interface
+	bool collideWith(Polygon& p);
+	bool collideWith(Circle& p);
+
+	//Collider Interface
+	bool collide(Collisionable& p);
+
+	virtual ~Polygon();
+private:
+	void recalculateCM();
+
+	Vec* vertices;
+	size_t count;
+	double max_distance;
 };
 
+/*
 class ConvexPolygon: public Polygon {
 public:
 	ConvexPolygon(Vec& vec);
@@ -39,8 +55,8 @@ private:
 	Vec findFirstVertex();
 	void jarvisAlgorithm();
 
-	bool angleComparator(const Vec& center,const Vec& a, const Vec& b);
+	bool angleComparator(const Vec& center, const Vec& a, const Vec& b);
 
 };
-
+*/
 #endif /* POLYGON_H_ */
