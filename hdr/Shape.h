@@ -2,12 +2,16 @@
 #define SHAPE_H_
 
 #include "Math.h"
+#include "CollisionInterface.h"
 
-class Shape{
+class Shape: public Collider, public Collisionable{
 public:
 	virtual bool contains(const Vec& point)= 0;
 	virtual ~Shape() = 0;
 	Shape(Vec& position);
+	Vec getPosition();
+	virtual double getExternalRadius() = 0;
+
 protected:
 	Vec& center;
 };

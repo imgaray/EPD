@@ -3,9 +3,9 @@
 #include "Shape.h"
 
 Shape::Shape(Vec& pos):center(pos){}
+Shape::~Shape(){}
 
-Shape::~Shape(){
+Vec Shape::getPosition(){
+	return center;
 }
-
-
 #endif /* SHAPE_CPP */

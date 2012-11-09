@@ -3,17 +3,32 @@
 
 #include "Polygon.h"
 
-// POLYGON //
+// PUBLIC INTERFACE POLYGON //
 Polygon::Polygon(Vec& vec) :
 		Shape(vec) {
 	this->count = 0;
 	this->vertices = new Vec[MAX_POLYGON_VERTICES];
-	this->normals = new Vec[MAX_POLYGON_VERTICES];
+	this->vertices[0] = vec;
 }
 
 Polygon::~Polygon() {
 	delete[] this->vertices;
-	delete[] this->normals;
+}
+
+void Polygon::addVertex(Vec& vertex) {
+	if (this->count < MAX_POLYGON_VERTICES)
+		this->vertices[this->count++] = vertex;
+	recalculateCM();
+}
+
+void Polygon::removeVertes(const Vec& vertex) {
+	bool foundVertex = false;
+	for (unsigned short i = 0; i < this->count; i++) {
+		if (this->vertices[i] == vertex)
+			foundVertex = true;
+		if (foundVertex && i < this->count - 1)
+			this->vertices[i] = this->vertices[i + 1];
+	}
 }
 
 Vec* Polygon::getVertices() {
@@ -23,75 +38,143 @@ Vec* Polygon::getVertices() {
 unsigned short Polygon::getVerticesCount() {
 	return this->count;
 }
-////////////////////
-// CONVEX POLYGON //
 
-ConvexPolygon::ConvexPolygon(Vec& vec) :
-		Polygon(vec) {
+double Polygon::getExternalRadius(){
+	return this->max_distance;
 }
 
-ConvexPolygon::~ConvexPolygon() {
-}
 
-void ConvexPolygon::setRectangle(double height, double width) {
-	this->vertices[0].x = 0;
-	this->vertices[0].y = height;
-
-	this->vertices[0].x = width;
-	this->vertices[0].y = height;
-
-	this->vertices[0].x = width;
-	this->vertices[0].y = 0;
-
-	this->vertices[0].x = 0;
-	this->vertices[0].y = 0;
-}
-
-void ConvexPolygon::addVertex(Vec &point) {
-	this->vertices[this->count] = point;
-	this->count++;
-	try {
-		this->jarvisAlgorithm();
-		for (unsigned short i = 0; i < this->count; i++) {
-			std::cout << vertices[i].x << vertices[i].y << std::endl;
-		}
-		std::cout << std::endl;
-	} catch (char const *str) {
-		this->count--;
-		throw str;
-	}
+// PROTECTED INTERFACE
+void Polygon::recalculateCM() {
 
 }
 
-Vec ConvexPolygon::findFirstVertex() {
-	Vec min = this->vertices[0];
+// SHAPE INTERFACE
+bool Polygon::contains(const Vec& point) {
+	unsigned short count = 0;
 	for (unsigned short i = 0; i < this->count; i++) {
-		if (min != this->vertices[i]) {
-			if (this->vertices[i].x < min.x
-					|| (this->vertices[i].x == min.x
-							&& this->vertices[i].y < min.y))
-				min = vertices[i];
+		Vec v1 = this->vertices[i], v2 = this->vertices[0];
+		if (i < this->count - 1)
+			v2 = vertices[i + 1];
+		double minX = std::min(v1.x, v2.x);
+		double maxX = std::max(v1.x, v2.x);
+		if (minX <= point.x && maxX >= point.x && minX != maxX) {
+			double k2 = (point.x - v2.x) / (v2.x - v1.x);
+			double k = (k2 * (v2.y - v1.y) + v2.y) / point.y;
+			if (k == 1.0)
+				return true;
+			if (k > 1.0)
+				count++;
+		} else if (minX == maxX && minX == point.x) {
+			double minY = std::min(v1.y, v2.y);
+			double maxY = std::max(v1.y, v2.y);
+			if (minY <= point.y && maxY >= point.y) {
+				return true;
+			}
 		}
 	}
-	return min;
+	return (count % 2 != 0);
 }
 
-bool ConvexPolygon::angleComparator(const Vec& center, const Vec& a,
-		const Vec& b) {
-	Vec norm(0, 1);
-	Vec centerA = a.distance(center);
-	Vec centerB = b.distance(center);
-	double angA = norm.angle(centerA);
-	double angB = norm.angle(centerB);
-	if (centerA.x < 0)
-		angA = 2 * M_PI - angA;
-	if (centerB.x < 0)
-		angB = 2 * M_PI - angB;
-	if (angA < angB || (angA == angB && centerA.norm() < centerB.norm()))
-		return true;
+// COLLIDER INTERFACE
+bool Polygon::collide(Collisionable &col) {
+	return col.collideWith(*this);
+}
+
+// COLLISIONABLE INTERFACE
+bool Polygon::collideWith(Polygon &p) {
+	if ((center.distance(p.center)).norm() > (max_distance + p.max_distance))
+		return false;
+
+	for (size_t i = 0; i < p.count; i++) {
+		if (this->contains(p.vertices[i]))
+			return true;
+	}
+
+	for (size_t i = 0; i < count; i++) {
+		if (p.contains(vertices[i]))
+			return true;
+	}
 	return false;
 }
 
+bool Polygon::collideWith(Circle &c) {
+	if ((center.distance(((Shape&) c).getPosition())).norm()
+			> (max_distance + ((Shape&) c).getExternalRadius()))
+		return false;
+
+	return true;
+}
+/*
+ ////////////////////
+ // CONVEX POLYGON //
+
+ ConvexPolygon::ConvexPolygon(Vec& vec) :
+ Polygon(vec) {
+ }
+
+ ConvexPolygon::~ConvexPolygon() {
+ }
+
+ void ConvexPolygon::setRectangle(double height, double width) {
+ this->vertices[0].x = 0;
+ this->vertices[0].y = height;
+
+ this->vertices[0].x = width;
+ this->vertices[0].y = height;
+
+ this->vertices[0].x = width;
+ this->vertices[0].y = 0;
+
+ this->vertices[0].x = 0;
+ this->vertices[0].y = 0;
+ }
+
+ void ConvexPolygon::addVertex(Vec &vertex) {
+ if (this->count < MAX_POLYGON_VERTICES) {
+ this->vertices[this->count++] = vertex;
+ try {
+ this->jarvisAlgorithm();
+ for (unsigned short i = 0; i < this->count; i++) {
+ std::cout << vertices[i].x << vertices[i].y << std::endl;
+ }
+ std::cout << std::endl;
+ } catch (char const *str) {
+ this->count--;
+ throw str;
+ }
+ }
+ }
+
+ Vec ConvexPolygon::findFirstVertex() {
+ Vec min = this->vertices[0];
+ for (unsigned short i = 0; i < this->count; i++) {
+ if (min != this->vertices[i]) {
+ if (this->vertices[i].x < min.x
+ || (this->vertices[i].x == min.x
+ && this->vertices[i].y < min.y))
+ min = vertices[i];
+ }
+ }
+ return min;
+ }
+
+ bool ConvexPolygon::angleComparator(const Vec& center, const Vec& a,
+ const Vec& b) {
+ Vec norm(0, 1);
+ Vec centerA = a.distance(center);
+ Vec centerB = b.distance(center);
+ double angA = norm.angle(centerA);
+ double angB = norm.angle(centerB);
+ if (centerA.x < 0)
+ angA = 2 * M_PI - angA;
+ if (centerB.x < 0)
+ angB = 2 * M_PI - angB;
+ if (angA < angB || (angA == angB && centerA.norm() < centerB.norm()))
+ return true;
+ return false;
+ }
+ */
 /*
  *  ONLY FOR 2D
  *	S: array of vertices
@@ -112,54 +195,54 @@ bool ConvexPolygon::angleComparator(const Vec& center, const Vec& a,
 /*
  * TODO: change part of the algorithm to avoid losing the vertex if the polygon is not convex.
  * */
-void ConvexPolygon::jarvisAlgorithm() {
-	Vec* order = new Vec[MAX_POLYGON_VERTICES];
-	Vec pointOnHull = findFirstVertex();
-	Vec endPoint = this->vertices[0];
-	unsigned short i = 0, j = 0, lastVertex = 0;
-	do {
-		order[i] = pointOnHull;
-		endPoint = this->vertices[0];
+/*void ConvexPolygon::jarvisAlgorithm() {
+ Vec* order = new Vec[MAX_POLYGON_VERTICES];
+ Vec pointOnHull = findFirstVertex();
+ Vec endPoint = this->vertices[0];
+ unsigned short i = 0, j = 0, lastVertex = 0;
+ do {
+ order[i] = pointOnHull;
+ endPoint = this->vertices[0];
 
-		for (j = i; j < this->count; j++) {
-			if (pointOnHull == endPoint
-					|| (this->vertices[j] != pointOnHull
-							&& angleComparator(pointOnHull, this->vertices[j],
-									endPoint))) {
-				endPoint = this->vertices[j];
-				lastVertex = j;
-			}
-		}
-		i++;
-		vertices[lastVertex] = vertices[i];
-		pointOnHull = endPoint;
-	} while (pointOnHull != order[0]);
+ for (j = i; j < this->count; j++) {
+ if (pointOnHull == endPoint
+ || (this->vertices[j] != pointOnHull
+ && angleComparator(pointOnHull, this->vertices[j],
+ endPoint))) {
+ endPoint = this->vertices[j];
+ lastVertex = j;
+ }
+ }
+ i++;
+ vertices[lastVertex] = vertices[i];
+ pointOnHull = endPoint;
+ } while (pointOnHull != order[0]);
 
-	delete[] this->vertices;
+ delete[] this->vertices;
 
-	if (i != this->count)
-		throw "Not a convex polygon";
-	else
-		this->vertices = order;
-}
-
+ if (i != this->count)
+ throw "Not a convex polygon";
+ else
+ this->vertices = order;
+ }
+ */
 /*
  * THE MAGIC, only works in 2D
  * */
-bool ConvexPolygon::contains(const Vec& point) {
-	for (unsigned short i = 0; i < this->count - 1; i++) {
-		if (point == vertices[i])
-			return true;
-		if (((vertices[i + 1] - vertices[i]).cross(vertices[i].distance(point))).z
-				< 0.0)
-			return false;
-	}
-	if (point == vertices[this->count - 1])
-		return true;
-	if (((vertices[0] - vertices[this->count - 1]).cross(
-			vertices[this->count - 1].distance(point))).z >= 0.0)
-		return true;
-	return false;
-}
-
+/*bool ConvexPolygon::contains(const Vec& point) {
+ for (unsigned short i = 0; i < this->count - 1; i++) {
+ if (point == vertices[i])
+ return true;
+ if (((vertices[i + 1] - vertices[i]).cross(vertices[i].distance(point))).z
+ < 0.0)
+ return false;
+ }
+ if (point == vertices[this->count - 1])
+ return true;
+ if (((vertices[0] - vertices[this->count - 1]).cross(
+ vertices[this->count - 1].distance(point))).z >= 0.0)
+ return true;
+ return false;
+ }
+ */
 #endif /* POLYGON_CPP */

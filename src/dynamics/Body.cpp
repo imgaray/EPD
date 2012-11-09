@@ -30,7 +30,7 @@ void Body::applyForce(const Force& force) {
 }
 void Body::applyForce(const Force& force, const Vec& point) {
 	this->applyForce(force);
-	this->applyTorque(force.getToque(point));
+	this->applyTorque(force.getToque(point - this->position));
 }
 void Body::applyTorque(const Torque& torque) {
 	this->torque += torque;
@@ -46,7 +46,7 @@ void Body::applyAngularImpulse(Vec& impulse) {
 
 void Body::applyImpulse(Vec& impulse, const Vec& point) {
 	this->applyLinearImpulse(impulse);
-	this->angular_velocity += point.cross(impulse) / this->mass;
+	this->angular_velocity += (point - this->position).cross(impulse) / this->mass;
 }
 
 Vec& Body::getPosition() {
