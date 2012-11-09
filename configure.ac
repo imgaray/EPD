@@ -1,6 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+AC_CONFIG_LIBOBJ_DIR([libs])
+
+
 #AC_PREREQ(2.60)
 AC_INIT(edp, 0.1, pag@bar.com)
 #AC_CONFIG_SRCDIR([src])
@@ -8,7 +11,7 @@ AC_CONFIG_HEADER([hdr/config.h])
 AM_INIT_AUTOMAKE([subdir-objects])
 
 # Checks for programs.
-AC_PROG_CPP
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 

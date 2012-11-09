@@ -1,9 +1,11 @@
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
+
+lib_LTLIBRARIES = libepd.la
 
 CXXFLAGS = -Wall -pedantic -g
-include_HEADERS = hdr/*.h
+libepdinclude_HEADERS = $(wildcard hdr/*h)
+libepd_la_SOURCES = $(shell find src -name "*.cpp")
+libepdincludedir = $(includedir)/EPD
 
-bin_PROGRAMS = main
-#main_SOURCES = src/*
-#main_LDADD = .libs/libmain.a
-
+#libedp_LIBRARIES = libedp.a
+#libedp_a_SOURCE = $(shell find src -name "*.cpp")
