@@ -24,7 +24,7 @@ Vec& Force::getLinearAcceleration(double mass) {
  */
 Torque& Force::getToque(const Vec& point) const {
 
-	Vec v = point.cross((Vec&) *this);
+	Vec v = point ^ ((Vec&) *this);
 	Torque* torque = new Torque(v.x, v.y, v.z);
 	return *torque;
 }

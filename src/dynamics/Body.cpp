@@ -46,7 +46,7 @@ void Body::applyAngularImpulse(Vec& impulse) {
 
 void Body::applyImpulse(Vec& impulse, const Vec& point) {
 	this->applyLinearImpulse(impulse);
-	this->angular_velocity += (point - this->position).cross(impulse) / this->mass;
+	this->angular_velocity += (point - this->position) ^ (impulse) / this->mass;
 }
 
 Vec& Body::getPosition() {

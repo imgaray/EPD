@@ -98,6 +98,13 @@ Vec Vec::operator /(double k) const {
 	return v;
 }
 
+double Vec::operator *(const Vec& a) const {
+	return this->dot(a);
+}
+Vec Vec::operator ^(const Vec& a) const {
+	return this->cross(a);
+}
+
 Vec Vec::normalize() {
 	Vec v(0, 0, 0);
 	double n = this->norm();
@@ -123,6 +130,12 @@ void Vec::set(double x, double y, double z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
+}
+
+Vec Vec::proyected(const Vec& b) const {
+	double dotAB = (*this) * b;
+	double dotB = b * b;
+	return (*this) * dotAB / dotB;
 }
 
 double Vec::dot(const Vec& a) const {

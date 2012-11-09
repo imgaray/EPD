@@ -22,12 +22,16 @@ public:
 	Vec operator *(double k) const;
 	Vec operator /(double k) const;
 
+	double operator *(const Vec& a) const;
+	Vec operator ^(const Vec& a) const;
+
 	/* methods*/
 	void set(double x, double y, double z);
 	Vec normalize();
 	double norm() const;
 	double angle(Vec& b) const;
 	Vec distance(const Vec& a) const;
+	Vec proyected(const Vec& a) const;
 	double dot(const Vec& a) const;
 	Vec cross(const Vec& a) const;
 

@@ -33,8 +33,10 @@ public:
 	bool collide(Collisionable& p);
 
 	virtual ~Polygon();
+
 private:
 	void recalculateCM();
+
 
 	Vec* vertices;
 	size_t count;
