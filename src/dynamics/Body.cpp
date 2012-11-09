@@ -26,7 +26,8 @@ Body::Body(double mass, Vec& position) :
 	this->shape = NULL;
 }
 Body::~Body() {
-	shape? delete shape:;
+	if (this->shape)
+		delete shape;
 }
 
 void Body::applyForce(const Force& force) {
@@ -76,18 +77,19 @@ double Body::getGravity() {
 	return this->gravity;
 }
 
-inline bool inContact(const Body& other) const {
-	return this->shape->touches(*(other->shape));
+inline bool Body::inContact(const Body& other) const {
+	return this->shape->touches(*(other.shape));
 }
 
-void collide(Body& other) {
-	assert(other->shape & this->shape);
-	if (!this->shape->touches(*(other->shape)) return;
+void Body::collide(Body& other) {
+	assert(other.shape && this->shape);
+	if (!this->inContact(other))
+		return;
 	// here on, we assume that the collision is an elastic one,
 	// could be modified later without changing the collide interface
 	// Two basic principles involved here: conservation of linear Momentum
 	// and conservation of Kinetic energy
-	
+
 }
 
 void Body::setPosition(Vec& pos) {
@@ -110,7 +112,8 @@ void Body::setGravity(double gravity) {
 }
 
 void Body::setShape(Shape* shape) {
-	this->shape? delete shape:;
+	if (this->shape)
+		delete shape;
 	this->shape = shape;
 }
 

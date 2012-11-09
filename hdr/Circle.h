@@ -9,19 +9,19 @@ class Circle: public Shape{
 public:
 	Circle(Vec& position, double radius);
 	~Circle();
-	double getRadius();
+	double getRadius() const;
 
 
 	//Shape Interface
-	virtual bool contains(const Vec& point);
-	double getExternalRadius();
+	virtual bool contains(const Vec& point) const;
+	double getExternalRadius() const;
 
 	//Collisionable Interface
-	bool collideWith(Polygon& p);
-	bool collideWith(Circle& p);
+	bool touchesWith(Polygon& p) const;
+	bool touchesWith(Circle& c) const;
 
 	//Collider Interface
-	bool collide(Collisionable& p);
+	bool touches(Collisionable& c) const;
 
 private:
 	double radius;

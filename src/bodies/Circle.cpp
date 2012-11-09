@@ -11,28 +11,28 @@ Circle::Circle(Vec &position_, double radius_) :
 Circle::~Circle() {
 }
 
-double Circle::getRadius(){
+double Circle::getRadius() const{
 	return radius;
 }
 
-double Circle::getExternalRadius(){
+double Circle::getExternalRadius() const{
 	return radius;
 }
 
 // SHAPE INTERFACE
-bool Circle::contains(const Vec& point) {
+bool Circle::contains(const Vec& point) const{
 	if (this->center.distance(point).norm() <= this->radius)
 		return true;
 	return false;
 }
 
 // COLLIDER INTERFACE
-bool Circle::collide(Collisionable &col) {
-	return col.collideWith(*this);
+bool Circle::touches(Collisionable &col) const{
+	return col.touchesWith((Circle&)*this);
 }
 
 // COLLISIONABLE INTERFACE
-bool Circle::collideWith(Polygon &p) {
+bool Circle::touchesWith(Polygon &p) const{
 	if ((center.distance(((Shape&) p).getPosition())).norm()
 			> (((Shape&) p).getExternalRadius() + radius))
 		return false;
@@ -40,7 +40,7 @@ bool Circle::collideWith(Polygon &p) {
 	return true;
 }
 
-bool Circle::collideWith(Circle &c) {
+bool Circle::touchesWith(Circle &c) const{
 	return (center.distance(c.center)).norm() <= (radius + c.radius);
 }
 #endif /*CIRCLE_CPP_*/

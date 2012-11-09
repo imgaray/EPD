@@ -31,15 +31,15 @@ void Polygon::removeVertes(const Vec& vertex) {
 	}
 }
 
-Vec* Polygon::getVertices() {
+Vec* Polygon::getVertices() const {
 	return this->vertices;
 }
 
-unsigned short Polygon::getVerticesCount() {
+unsigned short Polygon::getVerticesCount()const {
 	return this->count;
 }
 
-double Polygon::getExternalRadius(){
+double Polygon::getExternalRadius() const{
 	return this->max_distance;
 }
 
@@ -50,7 +50,7 @@ void Polygon::recalculateCM() {
 }
 
 // SHAPE INTERFACE
-bool Polygon::contains(const Vec& point) {
+bool Polygon::contains(const Vec& point) const{
 	unsigned short count = 0;
 	for (unsigned short i = 0; i < this->count; i++) {
 		Vec v1 = this->vertices[i], v2 = this->vertices[0];
@@ -77,12 +77,12 @@ bool Polygon::contains(const Vec& point) {
 }
 
 // COLLIDER INTERFACE
-bool Polygon::collide(Collisionable &col) {
-	return col.collideWith(*this);
+bool Polygon::touches(Collisionable &col) const{
+	return col.touchesWith((Polygon&)*this);
 }
 
 // COLLISIONABLE INTERFACE
-bool Polygon::collideWith(Polygon &p) {
+bool Polygon::touchesWith(Polygon &p) const{
 	if ((center.distance(p.center)).norm() > (max_distance + p.max_distance))
 		return false;
 
@@ -98,7 +98,7 @@ bool Polygon::collideWith(Polygon &p) {
 	return false;
 }
 
-bool Polygon::collideWith(Circle &c) {
+bool Polygon::touchesWith(Circle &c) const{
 	if ((center.distance(((Shape&) c).getPosition())).norm()
 			> (max_distance + ((Shape&) c).getExternalRadius()))
 		return false;

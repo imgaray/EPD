@@ -18,19 +18,19 @@ public:
 
 	virtual void addVertex(Vec& vertex);
 	void removeVertes(const Vec& vertex);
-	Vec* getVertices();
-	unsigned short getVerticesCount();
+	Vec* getVertices() const;
+	unsigned short getVerticesCount() const;
 
 	//Shape Interface
-	virtual bool contains(const Vec& point);
-	virtual double getExternalRadius();
+	virtual bool contains(const Vec& point) const;
+	virtual double getExternalRadius() const;
 
 	//Collisionable Interface
-	bool collideWith(Polygon& p);
-	bool collideWith(Circle& p);
+	bool touchesWith(Polygon& p) const;
+	bool touchesWith(Circle& c) const;
 
 	//Collider Interface
-	bool collide(Collisionable& p);
+	bool touches(Collisionable& c) const;
 
 	virtual ~Polygon();
 
