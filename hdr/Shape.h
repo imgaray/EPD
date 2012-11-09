@@ -2,9 +2,9 @@
 #define SHAPE_H_
 
 #include "Math.h"
-#include "CollisionInterface.h"
+#include "IntersectionInterface.h"
 
-class Shape: public Collider, public Collisionable{
+class Shape: public Toucher, public Touchable{
 public:
 	virtual bool contains(const Vec& point) const = 0;
 	virtual ~Shape() = 0;

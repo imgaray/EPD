@@ -77,7 +77,7 @@ bool Polygon::contains(const Vec& point) const{
 }
 
 // COLLIDER INTERFACE
-bool Polygon::touches(Collisionable &col) const{
+bool Polygon::touches(Touchable &col) const{
 	return col.touchesWith((Polygon&)*this);
 }
 

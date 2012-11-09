@@ -3,7 +3,7 @@
 
 #include "Shape.h"
 
-class Shape;
+class Circle;
 
 class Circle: public Shape{
 public:
@@ -21,7 +21,7 @@ public:
 	bool touchesWith(Circle& c) const;
 
 	//Collider Interface
-	bool touches(Collisionable& c) const;
+	bool touches(Touchable& c) const;
 
 private:
 	double radius;
