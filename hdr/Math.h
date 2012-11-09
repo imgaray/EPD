@@ -7,7 +7,7 @@ class Vec {
 public:
 	double x, y, z;
 	Vec(double x = 0, double y = 0, double z = 0);
-
+	Vec(const Vec& other);
 	/* redefinition methods*/
 	void operator +=(const Vec& v);
 	void operator -=(const Vec& v);
@@ -24,6 +24,8 @@ public:
 
 	double operator *(const Vec& a) const;
 	Vec operator ^(const Vec& a) const;
+
+	Vec& operator=(const Vec& v);
 
 	/* methods*/
 	void set(double x, double y, double z);

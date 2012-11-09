@@ -6,7 +6,8 @@
 
 class Shape: public Collider, public Collisionable{
 public:
-	virtual bool contains(const Vec& point)= 0;
+	virtual bool touches(const Shape& other) = 0;
+	virtual bool contains(const Vec& point) = 0;
 	virtual ~Shape() = 0;
 	Shape(Vec& position);
 	Vec getPosition();
