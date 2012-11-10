@@ -1,6 +1,8 @@
 #ifndef INTERSECTIONINTERFACE_H_
 #define INTERSECTIONINTERFACE_H_
 
+#include "SATChecker.h"
+
 class Touchable;
 class Toucher;
 class Circle;

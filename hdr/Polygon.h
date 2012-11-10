@@ -36,9 +36,10 @@ public:
 
 private:
 	void recalculateCM();
+	void recalculateNorms();
 
 
-	Vec* vertices;
+	Vec* vertices, *norms;
 	size_t count;
 	double max_distance;
 };

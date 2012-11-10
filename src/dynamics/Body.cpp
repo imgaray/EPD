@@ -89,7 +89,48 @@ void Body::collide(Body& other) {
 	// could be modified later without changing the collide interface
 	// Two basic principles involved here: conservation of linear Momentum
 	// and conservation of Kinetic energy
+    double  m21,dvx2,a,x21,y21,vx21,vy21,fy21,sign,vx_cm,vy_cm;
 
+	if (!other.mass) return;
+	m21=this->mass/other.mass;
+    x21=other.position.x-this->position.x;
+    y21=other.position.y-this->position.y;
+    vx21=this->getLinearVelocity().x-other.getLinearVelocity().x;
+    vy21=this->getLinearVelocity().y-other.getLinearVelocity().y;
+
+    vx_cm = (m1*vx1+m2*vx2)/(m1+m2) ;
+    vy_cm = (m1*vy1+m2*vy2)/(m1+m2) ;   
+
+
+//     *** return old velocities if balls are not approaching ***
+    if ( (vx21*x21 + vy21*y21) >= 0) return;
+
+
+//     *** I have inserted the following statements to avoid a zero divide; 
+//         (for single precision calculations, 
+//          1.0E-12 should be replaced by a larger value). **************  
+  
+       fy21=1.0E-12*fabs(y21);                            
+       if ( fabs(x21)<fy21 ) {  
+                   if (x21<0) { sign=-1; } else { sign=1;}  
+                   x21=fy21*sign; 
+        } 
+
+//     ***  update velocities ***
+       a=y21/x21;
+       dvx2= -2*(vx21 +a*vy21)/((1+a*a)*(1+m21)) ;
+       vx2=vx2+dvx2;
+       vy2=vy2+a*dvx2;
+       vx1=vx1-m21*dvx2;
+       vy1=vy1-a*m21*dvx2;
+
+//     ***  velocity correction for inelastic collisions ***
+       vx1=(vx1-vx_cm)*R + vx_cm;
+       vy1=(vy1-vy_cm)*R + vy_cm;
+       vx2=(vx2-vx_cm)*R + vx_cm;
+       vy2=(vy2-vy_cm)*R + vy_cm;
+   
+       return;
 }
 
 void Body::setPosition(Vec& pos) {

@@ -52,6 +52,7 @@ public:
 	Vec Vec::toCanonicalFromSph() const;
 	Vec Vec::toCanonicalFromCyl() const;
 	
+	Vec perpendicular2D() const;
 	virtual ~Vec();
 
 };
