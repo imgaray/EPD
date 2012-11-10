@@ -37,6 +37,7 @@ public:
 	double dot(const Vec& a) const;
 	Vec cross(const Vec& a) const;
 
+	Vec perpendicular2D() const;
 	virtual ~Vec();
 
 };

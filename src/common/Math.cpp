@@ -31,7 +31,8 @@ Vec& Vec::operator=(const Vec& v) {
 	return (*this);
 }
 
-Vec::Vec(const Vec& other): x(other.x), y(other.y), z(other.z) {
+Vec::Vec(const Vec& other) :
+		x(other.x), y(other.y), z(other.z) {
 }
 
 void Vec::operator +=(const Vec& v) {
@@ -120,6 +121,11 @@ Vec Vec::normalize() {
 	double n = this->norm();
 	if (n)
 		v.set(x / n, y / n, z / n);
+	return v;
+}
+
+Vec Vec::perpendicular2D() const {
+	Vec v(y, -x);
 	return v;
 }
 

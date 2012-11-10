@@ -6,19 +6,22 @@
 // PUBLIC INTERFACE POLYGON //
 Polygon::Polygon(Vec& vec) :
 		Shape(vec) {
-	this->count = 0;
+	this->count = 1;
 	this->vertices = new Vec[MAX_POLYGON_VERTICES];
+	this->norms = new Vec[MAX_POLYGON_VERTICES];
 	this->vertices[0] = vec;
 }
 
 Polygon::~Polygon() {
 	delete[] this->vertices;
+	delete[] this->norms;
 }
 
 void Polygon::addVertex(Vec& vertex) {
 	if (this->count < MAX_POLYGON_VERTICES)
 		this->vertices[this->count++] = vertex;
 	recalculateCM();
+	recalculateNorms();
 }
 
 void Polygon::removeVertes(const Vec& vertex) {
@@ -35,22 +38,45 @@ Vec* Polygon::getVertices() const {
 	return this->vertices;
 }
 
-unsigned short Polygon::getVerticesCount()const {
+unsigned short Polygon::getVerticesCount() const {
 	return this->count;
 }
 
-double Polygon::getExternalRadius() const{
+double Polygon::getExternalRadius() const {
 	return this->max_distance;
 }
 
-
 // PROTECTED INTERFACE
 void Polygon::recalculateCM() {
+	double area = 0;
+	Vec nC;
+	for (size_t i = 0; i < count - 1; i++) {
+		nC += ((vertices[i] + vertices[i + 1])
+				* (vertices[i].x * vertices[i + 1].y
+						- vertices[i].y * vertices[i + 1].x));
+		area += (vertices[i].x * vertices[i + 1].y
+				- vertices[i].y * vertices[i + 1].x);
+	}
+	area /= 2;
+	center = nC / (6 * area);
+	for (size_t i = 0; i < count - 1; i++) {
+		double norm = (vertices[i] - center).norm();
+		if (norm > max_distance)
+			max_distance = norm;
+	}
+}
 
+void Polygon::recalculateNorms() {
+	for (size_t i = 0; i < count; i++) {
+		Vec v2 = vertices[0];
+		if (i < count - 1)
+			v2 = vertices[i + 1];
+		norms[i] = (v2 - vertices[i]).perpendicular2D();
+	}
 }
 
 // SHAPE INTERFACE
-bool Polygon::contains(const Vec& point) const{
+bool Polygon::contains(const Vec& point) const {
 	unsigned short count = 0;
 	for (unsigned short i = 0; i < this->count; i++) {
 		Vec v1 = this->vertices[i], v2 = this->vertices[0];
@@ -77,12 +103,12 @@ bool Polygon::contains(const Vec& point) const{
 }
 
 // COLLIDER INTERFACE
-bool Polygon::touches(Touchable &col) const{
-	return col.touchesWith((Polygon&)*this);
+bool Polygon::touches(Touchable &col) const {
+	return col.touchesWith((Polygon&) *this);
 }
 
 // COLLISIONABLE INTERFACE
-bool Polygon::touchesWith(Polygon &p) const{
+bool Polygon::touchesWith(Polygon &p) const {
 	if ((center.distance(p.center)).norm() > (max_distance + p.max_distance))
 		return false;
 
@@ -98,13 +124,33 @@ bool Polygon::touchesWith(Polygon &p) const{
 	return false;
 }
 
-bool Polygon::touchesWith(Circle &c) const{
-	if ((center.distance(((Shape&) c).getPosition())).norm()
-			> (max_distance + ((Shape&) c).getExternalRadius()))
+bool Polygon::touchesWith(Circle &circle) const {
+	Shape& s = ((Shape&) circle);
+	if ((center.distance(s.getPosition())).norm()
+			> (max_distance + s.getExternalRadius()))
 		return false;
 
-	return true;
+	Vec* normsToCheck = new Vec[this->count + 1];
+
+	double minDistanceAxis = 0.0;
+	Vec normC(0);
+	for (size_t i = 0; i < this->count; i++) {
+		normsToCheck[i] = norms[i];
+		Vec potentialAxis = s.getPosition() - vertices[i];
+		double norm = potentialAxis.norm();
+		if (i == 0 || norm < minDistanceAxis) {
+			minDistanceAxis = norm;
+			normC = potentialAxis.perpendicular2D();
+		}
+	};
+
+	normsToCheck[count] = normC;
+	bool ans = SATChecker().satAlgorithm(normsToCheck, count + 1, vertices,
+			s.getPosition(), s.getExternalRadius());
+	delete[] normsToCheck;
+	return ans;
 }
+
 /*
  ////////////////////
  // CONVEX POLYGON //
