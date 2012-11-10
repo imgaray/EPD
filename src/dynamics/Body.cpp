@@ -79,7 +79,7 @@ double Body::getGravity() {
 }
 
 inline bool Body::inContact(const Body& other) const {
-	return this->shape->touches((Touchable&)(*(other.shape)));
+	return this->shape->touches((Touchable&) (*(other.shape)));
 }
 
 // this is an adaption of the following algorithm:
@@ -92,41 +92,42 @@ void Body::collide(Body& other) {
 	// could be modified later without changing the collide interface
 	// Two basic principles involved here: conservation of linear Momentum
 	// and conservation of Kinetic energy
-    double  m21,dvx2,a,x21,y21,vx21,vy21,fy21,sign,vx_cm,vy_cm, R;
-    // Almost perfectly elastic collision, this factor R is the restitution
-    // coefficient. Must be between 1 and 0
-    R = 0.99
-	if (!other.mass) return;
+	double m21, dvx2, a, x21, y21, vx21, vy21, fy21, sign, vx_cm, vy_cm, R;
+	// Almost perfectly elastic collision, this factor R is the restitution
+	// coefficient. Must be between 1 and 0
+	R = 0.99;
+	if (!other.mass)
+		return;
 	// mass ratio
-	m21=this->mass/other.mass;
+	m21 = this->mass / other.mass;
 	// relative distance
-    x21=other.position.x-this->position.x;
-    y21=other.position.y-this->position.y;
-    // relative velocities
-    vx21=this->getLinearVelocity().x-other.getLinearVelocity().x;
-    vy21=this->getLinearVelocity().y-other.getLinearVelocity().y;
+	x21 = other.position.x - this->position.x;
+	y21 = other.position.y - this->position.y;
+	// relative velocities
+	vx21 = this->getLinearVelocity().x - other.getLinearVelocity().x;
+	vy21 = this->getLinearVelocity().y - other.getLinearVelocity().y;
 	// the velocity of the center of mass of both bodies united
-    vx_cm = (this->mass * this->getLinearVelocity().x + 
-					other.mass*other.getLinearVelocity().x)
-					/(this->mass + other.mass);
-    vy_cm = (this->mass * this->getLinearVelocity().y + 
-					other.mass*other.getLinearVelocity().y)
-					/(this->mass + other.mass);
-
+	vx_cm = (this->mass * this->getLinearVelocity().x
+			+ other.mass * other.getLinearVelocity().x)
+			/ (this->mass + other.mass);
+	vy_cm = (this->mass * this->getLinearVelocity().y
+			+ other.mass * other.getLinearVelocity().y)
+			/ (this->mass + other.mass);
 
 // return old velocities if bodies are not approaching
-    if ((vx21 * x21 + vy21 * y21) >= 0) return;
+	if ((vx21 * x21 + vy21 * y21) >= 0)
+		return;
 
 // Author notes:
 // I have inserted the following statements to avoid a zero divide; 
 // (for single precision calculations, 
 // 1.0E-12 should be replaced by a larger value).  
-  
-	fy21 = 1.0E - 12 * fabs(y21);                            
-	if (fabs(x21) < fy21) {  
-		sign = (x21 < 0)? -1 : 1;  
-		x21 = fy21 * sign; 
-	} 
+
+	fy21 = 1.0E-12 * fabs(y21);
+	if (fabs(x21) < fy21) {
+		sign = (x21 < 0) ? -1 : 1;
+		x21 = fy21 * sign;
+	}
 
 // update velocities
 	a = y21 / x21;
@@ -137,10 +138,14 @@ void Body::collide(Body& other) {
 	this->getLinearVelocity().x = this->getLinearVelocity().y - a * m21 * dvx2;
 
 // velocity correction for inelastic collisions
-	this->getLinearVelocity().x = (this->getLinearVelocity().x - vx_cm) * R + vx_cm;
-	this->getLinearVelocity().y = (this->getLinearVelocity().y - vy_cm) * R + vy_cm;
-	other.getLinearVelocity().x = (other.getLinearVelocity().x - vx_cm) * R + vx_cm;
-	other.getLinearVelocity().y = (other.getLinearVelocity().y - vy_cm) * R + vy_cm;
+	this->getLinearVelocity().x = (this->getLinearVelocity().x - vx_cm) * R
+			+ vx_cm;
+	this->getLinearVelocity().y = (this->getLinearVelocity().y - vy_cm) * R
+			+ vy_cm;
+	other.getLinearVelocity().x = (other.getLinearVelocity().x - vx_cm) * R
+			+ vx_cm;
+	other.getLinearVelocity().y = (other.getLinearVelocity().y - vy_cm) * R
+			+ vy_cm;
 }
 
 void Body::setPosition(Vec& pos) {

@@ -10,6 +10,6 @@ private:
 public:
 	Collision(Body& one, Body& other);
 	virtual ~Collision();
-}
+};
 
 #endif

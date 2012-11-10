@@ -3,19 +3,24 @@
 #include "Force.h"
 
 Force::Force(double x, double y, double z) :
-		my_vector(x, y, z) {
+		Vec(x, y, z) {
 }
 
-Force::Force(const Vec& vec): my_vector(vec) {
+Force::Force(const Vec& vec) :
+		Vec(vec) {
+}
+
+Force::Force(const Force& other) :
+		Vec((Vec&) other) {
 }
 
 // by convention, (radius, phi, theta)
-Force Force::toShperical() const {
-	return Force(my_vector.toSpherical());
+Force Force::toSpherical() const {
+	return Force(this->toSphericals());
 }
 
 Force Force::toCylindrical() const {
-	return Force(my_vector.toCylindrical());
+	return Force(this->toCylindrical());
 }
 
 Force::~Force() {

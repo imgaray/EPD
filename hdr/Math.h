@@ -49,8 +49,8 @@ public:
 	Vec toCylindrical() const;
 	
 	// TODO(nacho): see if implement this.
-	Vec Vec::toCanonicalFromSph() const;
-	Vec Vec::toCanonicalFromCyl() const;
+	Vec toCanonicalFromSph() const;
+	Vec toCanonicalFromCyl() const;
 	
 	Vec perpendicular2D() const;
 	virtual ~Vec();
