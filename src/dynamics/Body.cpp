@@ -3,6 +3,7 @@
 #include "Body.h"
 #include <assert.h>
 #include "CtsDynamics.h"
+#include <cmath>
 
 Body::Body(double mass) :
 		position(), linear_velocity(), angular_velocity() {
