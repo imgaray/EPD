@@ -92,60 +92,49 @@ void Body::collide(Body& other) {
 	// could be modified later without changing the collide interface
 	// Two basic principles involved here: conservation of linear Momentum
 	// and conservation of Kinetic energy
-	double m21, dvx2, a, x21, y21, vx21, vy21, fy21, sign, vx_cm, vy_cm, R;
+	double m21, dvx2, a, fy21, sign, R;
 	// Almost perfectly elastic collision, this factor R is the restitution
 	// coefficient. Must be between 1 and 0
+	Vec v_cm, r21, v21;
 	R = 0.99;
-	if (!other.mass)
-		return;
+	if (!other.mass) return;
 	// mass ratio
 	m21 = this->mass / other.mass;
 	// relative distance
-	x21 = other.position.x - this->position.x;
-	y21 = other.position.y - this->position.y;
+	r21 = other.position - this->position;
 	// relative velocities
-	vx21 = this->getLinearVelocity().x - other.getLinearVelocity().x;
-	vy21 = this->getLinearVelocity().y - other.getLinearVelocity().y;
+	v21 = this->linear_velocity - other.linear_velocity;
 	// the velocity of the center of mass of both bodies united
-	vx_cm = (this->mass * this->getLinearVelocity().x
-			+ other.mass * other.getLinearVelocity().x)
+	v_cm = (this->linear_velocity * this->mass
+			+ other.linear_velocity * other.mass) 
 			/ (this->mass + other.mass);
-	vy_cm = (this->mass * this->getLinearVelocity().y
-			+ other.mass * other.getLinearVelocity().y)
-			/ (this->mass + other.mass);
-
 // return old velocities if bodies are not approaching
-	if ((vx21 * x21 + vy21 * y21) >= 0)
-		return;
+	if ((v21 * r21) >= 0) return;
 
 // Author notes:
 // I have inserted the following statements to avoid a zero divide; 
 // (for single precision calculations, 
 // 1.0E-12 should be replaced by a larger value).  
 
-	fy21 = 1.0E-12 * fabs(y21);
-	if (fabs(x21) < fy21) {
-		sign = (x21 < 0) ? -1 : 1;
-		x21 = fy21 * sign;
+	fy21 = 1.0E-12 * fabs(r21.y);
+	if (fabs(r21.x) < fy21) {
+		sign = (r21.x < 0)? -1 : 1;
+		r21.x = fy21 * sign;
 	}
 
 // update velocities
-	a = y21 / x21;
-	dvx2 = -2 * (vx21 + a * vy21) / ((1 + a * a) * (1 + m21));
-	other.getLinearVelocity().x = other.getLinearVelocity().x + dvx2;
-	other.getLinearVelocity().y = other.getLinearVelocity().y + a * dvx2;
-	this->getLinearVelocity().x = this->getLinearVelocity().y - m21 * dvx2;
-	this->getLinearVelocity().x = this->getLinearVelocity().y - a * m21 * dvx2;
+	a = r21.y / r21.x;
+	dvx2 = -2 * (v21.x + a * v21.y) / ((1 + a * a) * (1 + m21));
+	other.linear_velocity.x = other.linear_velocity.x + dvx2;
+	other.linear_velocity.y = other.linear_velocity.y + a * dvx2;
+	this->linear_velocity.x = this->linear_velocity.x - m21 * dvx2;
+	this->linear_velocity.y = this->linear_velocity.y - a * m21 * dvx2;
 
 // velocity correction for inelastic collisions
-	this->getLinearVelocity().x = (this->getLinearVelocity().x - vx_cm) * R
-			+ vx_cm;
-	this->getLinearVelocity().y = (this->getLinearVelocity().y - vy_cm) * R
-			+ vy_cm;
-	other.getLinearVelocity().x = (other.getLinearVelocity().x - vx_cm) * R
-			+ vx_cm;
-	other.getLinearVelocity().y = (other.getLinearVelocity().y - vy_cm) * R
-			+ vy_cm;
+	this->linear_velocity = (this->linear_velocity - v_cm) * R
+			+ v_cm;
+	other.linear_velocity = (other.linear_velocity - v_cm) * R
+			+ v_cm;
 }
 
 void Body::setPosition(Vec& pos) {
