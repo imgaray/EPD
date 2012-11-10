@@ -21,7 +21,6 @@ public:
 	Vec operator -(const Vec& a) const;
 	Vec operator *(double k) const;
 	Vec operator /(double k) const;
-
 	double operator *(const Vec& a) const;
 	Vec operator ^(const Vec& a) const;
 
@@ -37,6 +36,22 @@ public:
 	double dot(const Vec& a) const;
 	Vec cross(const Vec& a) const;
 
+	/* coordenate changes */
+	// convention: (radius, phi, theta)
+	// radius >= 0
+	// 0 <= phi < pi
+	// 0 <= theta < 2pi
+	Vec toSphericals() const;
+	// convention: (radius, theta, z)
+	// radius >= 0
+	// 0 <= theta < 2pi
+	// z is the same as in canonical base	
+	Vec toCylindrical() const;
+	
+	// TODO(nacho): see if implement this.
+	Vec Vec::toCanonicalFromSph() const;
+	Vec Vec::toCanonicalFromCyl() const;
+	
 	virtual ~Vec();
 
 };

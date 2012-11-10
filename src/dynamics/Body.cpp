@@ -78,7 +78,7 @@ double Body::getGravity() {
 }
 
 inline bool Body::inContact(const Body& other) const {
-	return this->shape->touches(*(other.shape));
+	return this->shape->touches((Touchable&)(*(other.shape)));
 }
 
 void Body::collide(Body& other) {

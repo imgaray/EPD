@@ -10,7 +10,7 @@
 #define MAX_POLYGON_VERTICES 10
 #endif /* MAX_POLYGON_VERTICES */
 
-class Shape;
+class Circle;
 
 class Polygon: public Shape {
 public:
@@ -25,12 +25,12 @@ public:
 	virtual bool contains(const Vec& point) const;
 	virtual double getExternalRadius() const;
 
-	//Collisionable Interface
+	//Touchable Interface
 	bool touchesWith(Polygon& p) const;
 	bool touchesWith(Circle& c) const;
 
-	//Collider Interface
-	bool touches(Collisionable& c) const;
+	//Toucher Interface
+	bool touches(Touchable& c) const;
 
 	virtual ~Polygon();
 

@@ -160,4 +160,41 @@ Vec Vec::cross(const Vec& a) const {
 	return v + v2;
 }
 
+/* coordenate changes */
+// convention: (radius, theta, phi)
+// radius >= 0
+// 0 <= phi < pi
+// 0 <= theta < 2pi
+// if working in 2D, discard phi
+Vec Vec::toSpherical() const {
+	double r, t, p;
+	r = sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
+	// if it has no radius, it is the origin
+	if (r == 0) return Vec();
+	t = atan2(this->y, this->x);
+	p = acos(this->z / r);
+	return Vec(r, t, p);
+	
+}
+// convention: (radius, theta, z)
+// radius >= 0
+// 0 <= theta < 2pi
+// z is the same as in canonical base
+// if working in 2D, discard z	
+Vec Vec::toCylindrical() const {
+	double r, t;
+	r = sqrt(this->x * this->x + this->y * this->y)
+	// if it has no radius, it is centered in the origin
+	if (r == 0) return Vec(0,0,this->z);
+	// zero case value is implicit on radius condition
+	t = x>=0? asin(this->y/r): -asin(y/r) + PI;
+	return Vec(r, t, z);
+}
+
+Vec Vec::toCanonicalFromSph() const {
+}
+
+Vec Vec::toCanonicalFromCyl() const {
+}
+
 #endif /* MATH_CPP*/

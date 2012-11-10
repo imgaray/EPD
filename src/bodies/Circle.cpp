@@ -27,7 +27,7 @@ bool Circle::contains(const Vec& point) const{
 }
 
 // COLLIDER INTERFACE
-bool Circle::touches(Collisionable &col) const{
+bool Circle::touches(Touchable &col) const{
 	return col.touchesWith((Circle&)*this);
 }
 
