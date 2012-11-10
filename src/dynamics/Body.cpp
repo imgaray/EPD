@@ -91,7 +91,10 @@ void Body::collide(Body& other) {
 	// could be modified later without changing the collide interface
 	// Two basic principles involved here: conservation of linear Momentum
 	// and conservation of Kinetic energy
-    double  m21,dvx2,a,x21,y21,vx21,vy21,fy21,sign,vx_cm,vy_cm;
+    double  m21,dvx2,a,x21,y21,vx21,vy21,fy21,sign,vx_cm,vy_cm, R;
+    // Almost perfectly elastic collision, this factor R is the restitution
+    // coefficient. Must be between 1 and 0
+    R = 0.99
 	if (!other.mass) return;
 	// mass ratio
 	m21=this->mass/other.mass;
