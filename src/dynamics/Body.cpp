@@ -5,6 +5,10 @@
 #include "CtsDynamics.h"
 #include <cmath>
 
+static inline double max(double one, double other) {
+	return (one >= other)? one : other;
+}
+
 Body::Body(double mass) :
 		position(), linear_velocity(), angular_velocity() {
 	this->angle = 0;
@@ -135,6 +139,31 @@ void Body::collide(Body& other) {
 			+ v_cm;
 	other.linear_velocity = (other.linear_velocity - v_cm) * R
 			+ v_cm;
+			
+	/*
+	// TODO: see the way to get the contact point and the normal point of
+	// collision
+	Vec contact;
+	Vec normal;
+	double m1 = 1/this->mass;
+	double m2 = 1/other.mass;
+	double im1 = 1 / this->inertial_mass;
+	double im2 = 1 / other.inertial_mass;
+	Vec r1 = this->position - contact;
+	Vec r2 = other.position - contact;
+	Vec v1 = this->linear_velocity + this->angular_velocity ^ r1;
+	Vec v2 = other.linear_velocity + other.angular_velocity ^ r2;
+	Vec dv = v1 - v2;
+	double Kn = m1 + m2 + ((r1 ^ normal) ^ r1 * im1 + 
+	 			(r2 ^ normal) ^ r2 * im2) * normal;
+	Vec Pn = normal * max(-dv * normal / Kn, 0);
+	this->linear_velocity += Pn * m1;
+	this->angular_velocity += r1 ^ Pn * im1;
+	other.linear_velocity -= Pn * m2;
+	other.angular_velocity -= r2 ^ Pn * im2; 
+	// TODO: tangential part of P.
+	// See: http://www.xbdev.net/physics/RigidBodyImpulseCubes/index.php
+	*/
 }
 
 void Body::setPosition(Vec& pos) {
