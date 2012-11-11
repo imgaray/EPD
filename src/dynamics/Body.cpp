@@ -83,14 +83,16 @@ double Body::getGravity() {
 }
 
 inline bool Body::inContact(const Body& other) const {
-	return this->shape->touches((Touchable&) (*(other.shape)));
+	return this->shape->touches((Touchable&) (*(other.shape)), Vec(), Vec());
 }
 
 // this is an adaption of the following algorithm:
 // http://www.plasmaphysics.org.uk/programs/coll2d_cpp.htm
 void Body::collide(Body& other) {
 	assert(other.shape && this->shape);
-	if (!this->inContact(other))
+	Vec normal;
+	Vec contact;
+	if (!this->shape->touches((Touchable&) (*(other.shape)), contact, normal))
 		return;
 	// here on, we assume that the collision is an elastic one,
 	// could be modified later without changing the collide interface

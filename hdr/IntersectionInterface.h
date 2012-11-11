@@ -10,7 +10,7 @@ class Polygon;
 
 class Toucher{
 public:
-	virtual bool touches(Touchable& t) const = 0;
+	virtual bool touches(Touchable& t, Vec& point, Vec& norm) const = 0;
 	virtual ~Toucher(){};
 };
 
