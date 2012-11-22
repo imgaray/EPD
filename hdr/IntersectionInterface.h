@@ -10,14 +10,14 @@ class Polygon;
 
 class Toucher{
 public:
-	virtual bool touches(Touchable& t, Vec& point, Vec& norm) const = 0;
+	virtual bool touches(Touchable& t, Vec* point, Vec* norm, double* penetration,  size_t count) const = 0;
 	virtual ~Toucher(){};
 };
 
 class Touchable{
 public:
-	virtual bool touchesWith(Circle& t) const = 0;
-	virtual bool touchesWith(Polygon& p) const = 0;
+	virtual bool touchesWith(Circle& t, Vec* point, Vec* norm, double* penetration,  size_t count) const = 0;
+	virtual bool touchesWith(Polygon& p, Vec* point, Vec* norm, double* penetration,  size_t count) const = 0;
 	virtual ~Touchable(){};
 };
 

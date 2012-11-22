@@ -12,6 +12,8 @@ public:
 	Vec getPosition();
 	virtual double getExternalRadius() const = 0;
 
+	virtual Vec getFarthestPointInDirection(const Vec& direction) const = 0;
+	virtual Feature getBestFeature(Vec& direction) const = 0;
 protected:
 	Vec& center;
 };

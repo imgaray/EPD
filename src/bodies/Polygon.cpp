@@ -102,29 +102,105 @@ bool Polygon::contains(const Vec& point) const {
 	return (count % 2 != 0);
 }
 
+size_t Polygon::getFarthestVertexIndexInDirection(
+		const Vec& directionNormalized) const {
+	//assert(count > 0);
+	int farthestIndex = 0;
+	float farthestDistance = vertices[0] * directionNormalized;
+	float tmp;
+	for (size_t i = 1; i < count; ++i) {
+		tmp = vertices[i] * directionNormalized;
+		if (tmp > farthestDistance) {
+			farthestDistance = tmp;
+			farthestIndex = i;
+		}
+	}
+	return farthestIndex;
+}
+
+Vec Polygon::getFarthestPointInDirection(const Vec& directionNormalized) const {
+	return vertices[getFarthestVertexIndexInDirection(directionNormalized)];
+}
+
+Feature Polygon::getBestFeature(Vec& n) const {
+	Feature f;
+	// step 1
+	// find the farthest vertex in
+	// the polygon along the separation normal
+	size_t index = getFarthestVertexIndexInDirection(n);
+	// step 2
+	// now we need to use the edge that
+	// is most perpendicular, either the
+	// right or the left
+	Vec v = vertices[index];
+	Vec v1 = vertices[0];
+	Vec v0 = vertices[count];
+
+	if (index < count - 2)
+		v1 = vertices[index + 1];
+	if (index > 0)
+		Vec v0 = vertices[index - 1];
+
+	// v1 to v
+	Vec l = v - v1;
+	// v0 to v
+	Vec r = v - v0;
+	// the edge that is most perpendicular
+	// to n will have a dot product closer to zero
+	if (r.dot(n) <= l.dot(n)) {
+		// the right edge is better
+		// make sure to retain the winding direction
+		f.push_back(v0);
+		f.push_back(v);
+		//Edge e(v0, v);
+		//return e;
+	} else {
+		// the left edge is better
+		// make sure to retain the winding direction
+		f.push_back(v);
+		f.push_back(v1);
+		//Edge e(v, v1);
+		//return e;
+	}
+	// we return the maximum projection vertex (v)
+	// and the edge points making the best edge (v and either v0 or v1)
+	return f;
+}
+
 // COLLIDER INTERFACE
-bool Polygon::touches(Touchable &col) const {
-	return col.touchesWith((Polygon&) *this);
+bool Polygon::touches(Touchable &col, Vec* point, Vec* norm,
+		double* penetrations, size_t count) const {
+	return col.touchesWith((Polygon&) *this, point, norm, penetrations, count);
 }
 
 // COLLISIONABLE INTERFACE
-bool Polygon::touchesWith(Polygon &p) const {
+bool Polygon::touchesWith(Polygon &p, Vec* point, Vec* norm,
+		double* penetration, size_t count) const {
 	if ((center.distance(p.center)).norm() > (max_distance + p.max_distance))
 		return false;
+	size_t j = 0;
 
 	for (size_t i = 0; i < p.count; i++) {
-		if (this->contains(p.vertices[i]))
-			return true;
+		if (this->contains(p.vertices[i])) {
+			point[j++] = p.vertices[i];
+		}
 	}
 
 	for (size_t i = 0; i < count; i++) {
-		if (p.contains(vertices[i]))
+		if (p.contains(vertices[i])) {
+			point[j++] = vertices[i];
 			return true;
+		}
+	}
+	count = j;
+	if (count > 0) {
+		return true;
 	}
 	return false;
 }
 
-bool Polygon::touchesWith(Circle &circle) const {
+bool Polygon::touchesWith(Circle &circle, Vec* point, Vec* norm,
+		double* penetration, size_t count) const {
 	Shape& s = ((Shape&) circle);
 	if ((center.distance(s.getPosition())).norm()
 			> (max_distance + s.getExternalRadius()))

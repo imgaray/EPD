@@ -71,12 +71,12 @@ void Vec::operator /=(double k) {
  *}
  */
 
-Vec Vec::operator -() {
+Vec Vec::operator -() const {
 	Vec v(this->x * -1, this->y * -1, this->z * -1);
 	return v;
 }
 
-Vec Vec::operator !() {
+Vec Vec::operator !() const {
 	Vec v(this->x * -1, this->y * -1, this->z * -1);
 	return v;
 }
@@ -116,12 +116,19 @@ Vec Vec::operator ^(const Vec& a) const {
 	return this->cross(a);
 }
 
-Vec Vec::normalize() {
+Vec Vec::normalize() const {
 	Vec v(0, 0, 0);
 	double n = this->norm();
 	if (n)
 		v.set(x / n, y / n, z / n);
 	return v;
+}
+
+Vec Vec::rotateXY(double radians) const {
+	Vec rotated(x, y, z);
+	rotated.x = (double) (rotated.x * cos(radians) - rotated.y * sin(radians));
+	rotated.y = (double) (rotated.x * sin(radians) + rotated.y * cos(radians));
+	return rotated;
 }
 
 Vec Vec::perpendicular2D() const {
@@ -133,7 +140,7 @@ double Vec::norm() const {
 	return sqrt(x * x + y * y + z * z);
 }
 
-double Vec::angle(Vec& a) const {
+double Vec::angle(const Vec& a) const {
 	return acos(this->dot(a) / (this->norm() * a.norm()));
 }
 
@@ -206,4 +213,22 @@ Vec Vec::toCanonicalFromCyl() const {
 	return *(this);
 }
 
+Edge::Edge(Vec& r_v1, Vec& r_v2) :
+		v1(r_v1), v2(r_v2) {
+}
+
+Edge::~Edge() {
+}
+
+Edge::Edge(const Edge& other) :
+		v1(other.v1), v2(other.v2) {
+
+}
+Edge::Edge(Vec& r_v1) :
+		v1(r_v1), v2(r_v1) {
+}
+
+Vec Edge::distance() {
+	return v2 - v1;
+}
 #endif /* MATH_CPP*/

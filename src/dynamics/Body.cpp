@@ -5,10 +5,11 @@
 #include "CtsDynamics.h"
 #include <cmath>
 
+/* USE std::max(x,y), it's a macro i think: max(x, y) ((x) > (y)?(x):(y))
 static inline double max(double one, double other) {
-	return (one >= other)? one : other;
+	return (one >= other) ? one : other;
 }
-
+*/
 Body::Body(double mass) :
 		position(), linear_velocity(), angular_velocity() {
 	this->angle = 0;
@@ -83,16 +84,22 @@ double Body::getGravity() {
 }
 
 inline bool Body::inContact(const Body& other) const {
-	return this->shape->touches((Touchable&) (*(other.shape)), Vec(), Vec());
+	Vec* contact = new Vec[2];
+	Vec* norm = new Vec[2];
+	double penetration[2];
+	size_t count = 0;
+	return this->shape->touches((Touchable&) (*(other.shape)), contact, norm, penetration, count);
 }
 
 // this is an adaption of the following algorithm:
 // http://www.plasmaphysics.org.uk/programs/coll2d_cpp.htm
 void Body::collide(Body& other) {
 	assert(other.shape && this->shape);
-	Vec normal;
-	Vec contact;
-	if (!this->shape->touches((Touchable&) (*(other.shape)), contact, normal))
+	Vec* contact = new Vec[2];
+	Vec* norm = new Vec[2];
+	double penetration[2];
+	size_t count = 0;
+	if (!this->shape->touches((Touchable&) (*(other.shape)), contact, norm, penetration, count))
 		return;
 	// here on, we assume that the collision is an elastic one,
 	// could be modified later without changing the collide interface
@@ -103,7 +110,8 @@ void Body::collide(Body& other) {
 	// coefficient. Must be between 1 and 0
 	Vec v_cm, r21, v21;
 	R = 0.99;
-	if (!other.mass) return;
+	if (!other.mass)
+		return;
 	// mass ratio
 	m21 = this->mass / other.mass;
 	// relative distance
@@ -112,10 +120,10 @@ void Body::collide(Body& other) {
 	v21 = this->linear_velocity - other.linear_velocity;
 	// the velocity of the center of mass of both bodies united
 	v_cm = (this->linear_velocity * this->mass
-			+ other.linear_velocity * other.mass) 
-			/ (this->mass + other.mass);
+			+ other.linear_velocity * other.mass) / (this->mass + other.mass);
 // return old velocities if bodies are not approaching
-	if ((v21 * r21) >= 0) return;
+	if ((v21 * r21) >= 0)
+		return;
 
 // Author notes:
 // I have inserted the following statements to avoid a zero divide; 
@@ -124,7 +132,7 @@ void Body::collide(Body& other) {
 
 	fy21 = 1.0E-12 * fabs(r21.y);
 	if (fabs(r21.x) < fy21) {
-		sign = (r21.x < 0)? -1 : 1;
+		sign = (r21.x < 0) ? -1 : 1;
 		r21.x = fy21 * sign;
 	}
 
@@ -137,35 +145,33 @@ void Body::collide(Body& other) {
 	this->linear_velocity.y = this->linear_velocity.y - a * m21 * dvx2;
 
 // velocity correction for inelastic collisions
-	this->linear_velocity = (this->linear_velocity - v_cm) * R
-			+ v_cm;
-	other.linear_velocity = (other.linear_velocity - v_cm) * R
-			+ v_cm;
-			
+	this->linear_velocity = (this->linear_velocity - v_cm) * R + v_cm;
+	other.linear_velocity = (other.linear_velocity - v_cm) * R + v_cm;
+
 	/*
-	// TODO: see the way to get the contact point and the normal point of
-	// collision
-	Vec contact;
-	Vec normal;
-	double m1 = 1/this->mass;
-	double m2 = 1/other.mass;
-	double im1 = 1 / this->inertial_mass;
-	double im2 = 1 / other.inertial_mass;
-	Vec r1 = this->position - contact;
-	Vec r2 = other.position - contact;
-	Vec v1 = this->linear_velocity + this->angular_velocity ^ r1;
-	Vec v2 = other.linear_velocity + other.angular_velocity ^ r2;
-	Vec dv = v1 - v2;
-	double Kn = m1 + m2 + ((r1 ^ normal) ^ r1 * im1 + 
-	 			(r2 ^ normal) ^ r2 * im2) * normal;
-	Vec Pn = normal * max(-dv * normal / Kn, 0);
-	this->linear_velocity += Pn * m1;
-	this->angular_velocity += r1 ^ Pn * im1;
-	other.linear_velocity -= Pn * m2;
-	other.angular_velocity -= r2 ^ Pn * im2; 
-	// TODO: tangential part of P.
-	// See: http://www.xbdev.net/physics/RigidBodyImpulseCubes/index.php
-	*/
+	 // TODO: see the way to get the contact point and the normal point of
+	 // collision
+	 Vec contact;
+	 Vec normal;
+	 double m1 = 1/this->mass;
+	 double m2 = 1/other.mass;
+	 double im1 = 1 / this->inertial_mass;
+	 double im2 = 1 / other.inertial_mass;
+	 Vec r1 = this->position - contact;
+	 Vec r2 = other.position - contact;
+	 Vec v1 = this->linear_velocity + this->angular_velocity ^ r1;
+	 Vec v2 = other.linear_velocity + other.angular_velocity ^ r2;
+	 Vec dv = v1 - v2;
+	 double Kn = m1 + m2 + ((r1 ^ normal) ^ r1 * im1 +
+	 (r2 ^ normal) ^ r2 * im2) * normal;
+	 Vec Pn = normal * max(-dv * normal / Kn, 0);
+	 this->linear_velocity += Pn * m1;
+	 this->angular_velocity += r1 ^ Pn * im1;
+	 other.linear_velocity -= Pn * m2;
+	 other.angular_velocity -= r2 ^ Pn * im2;
+	 // TODO: tangential part of P.
+	 // See: http://www.xbdev.net/physics/RigidBodyImpulseCubes/index.php
+	 */
 }
 
 void Body::setPosition(Vec& pos) {
