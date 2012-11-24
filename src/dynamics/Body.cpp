@@ -83,6 +83,11 @@ double Body::getGravity() {
 	return this->gravity;
 }
 
+Transform2D Body::getTransform2D(){
+	return Transform2D(position, angle);
+}
+
+
 inline bool Body::inContact(const Body& other) const {
 	Vec* contact = new Vec[2];
 	Vec* norm = new Vec[2];

@@ -5,12 +5,14 @@
 #include "Math.h"
 #include "Force.h"
 #include "Shape.h"
+#include "Transform.h"
 
 class Body {
 private:
 	// this should be the Center of Mass position.
 	Vec position;
 	double angle;
+
 	// This is the velocity of the center of mass.
 	Vec linear_velocity;
 	Vec angular_velocity;
@@ -19,6 +21,8 @@ private:
 	Torque torque;
 	// The shape should determine the inertia_moment
 	Shape* shape;
+
+
 	double linear_damping;
 	double angular_damping;
 	double gravity;
@@ -50,7 +54,7 @@ public:
 	double getAngle();
 	double getGravity();
 	void setShape(Shape* shape);
-
+	Transform2D getTransform2D();
 	void setPosition(Vec& pos);
 	void setLinearVelocity(Vec& vel);
 	void setAngularVelocity(Vec& vel);
